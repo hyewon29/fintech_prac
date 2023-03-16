@@ -1,8 +1,8 @@
 import React,{useState} from "react";
 import AppHeader from "../components/common/AppHeader";
-import AppSearch from "../components/common/AppSearch";
-import AppList from "../components/common/AppList";
-
+import SearchInput from "../components/news/SearchInput";
+import NewsList from "../components/news/NewsList";
+import axios from "axios";
 
 /* homework 
         1. 뉴스 검색어를 입력받는 컴포넌트
@@ -13,13 +13,30 @@ import AppList from "../components/common/AppList";
 */
 
 const NewsSearch = () => {
-  const [news,setNews]=useState('');
+  const [searchText,setSearchText]=useState('');
+  const [news, setNews]=useState([]);
+
+  const handleChange=(e)=>{
+    const {value}=e.target;
+    setSearchText(value);
+  };
+  
+  const handleClick=(e)=>{
+    let url=`https://newsapi.org/v2/everything?q=${searchText}&apiKey=9a658327553e48059fa9060d21d86a03`;
+    axios.get(url).then((response)=>{
+      setNews(response.data.articles);
+      console.log(news);
+    });
+
+  };
+
+  
 
   return (
     <div>
       <AppHeader title={"뉴스 검색"}></AppHeader>
-      <AppSearch getData={setNews}></AppSearch>
-      <AppList sendData={news}></AppList>
+      <SearchInput handleClick={handleClick} handleChange={handleChange}></SearchInput>
+      <NewsList news={news}></NewsList>
     </div>
   );
 };
